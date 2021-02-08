@@ -1,5 +1,6 @@
 var passwordHash = require('password-hash');
 var Jimp = require('jimp');
+var chalk = require('chalk')
 
 exports.login = login;
 exports.signup = signup;
@@ -10,8 +11,7 @@ var regex = /'|"|`|\\|\//g;
 function login(socket, msg, con, tokens) {
     let username = msg.username;
     let password = msg.password;
-    console.log(username)
-    console.log(password)
+    console.log(chalk.gray(`User ${username} is trying to Authenticate`))
     if (username != "" && password != "" && regex.test(username) != true && regex.test(password) != true) {
         con.query("select * from `login` where username='" + username + "'", (err, res) =>{
             if (err) throw err;
@@ -27,18 +27,14 @@ function login(socket, msg, con, tokens) {
                     });
 
                     if (authedhashes.includes(res[0].hash) != true) {
-                        //generates token
+                        //generates token 
                         let token = require("crypto").randomBytes(10).toString('hex');
 
-                        //log
-                        console.log(username + "'s token is: " + token)
-
+                        //add to authenticated users pool
                         tokens.push([res[0].hash, token, username, res[0].name])
 
-                        //remember it 
-                        //tokens[res[0].hash] = { "token": token }
-
                         socket.emit('login', { "success": true, "token": token})
+                        console.log(chalk.green(`User ${username} has sussecfully authenticated!`))
                     } else {
                         let token = "";
                         tokens.forEach(element => {
@@ -50,13 +46,16 @@ function login(socket, msg, con, tokens) {
                     }
                 
                 } else {
+                    console.log(chalk.red(`User ${username} failed to Authenticate`))
                     socket.emit('login', {"success": false, "errmsg": "Wrong username or password"})
                 }
             } else {
+                console.log(chalk.red(`User ${username} failed to Authenticate`))
                 socket.emit('login', {"success": false, "errmsg": "Wrong username or password"})
             }
         })
     } else {
+        console.log(chalk.red(`User ${username} failed to Authenticate`))
         socket.emit('login', {"success": false, "errmsg": "No special chars"})
     }
 }
