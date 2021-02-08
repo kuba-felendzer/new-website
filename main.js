@@ -10,9 +10,9 @@ const mysql = require('mysql')
 
 //me files
 const loginsys = require("./loginsys")
-const getnav = require("./getnav.js")
+const getNav = require("./getnav.js").getNav
 const ips = require("./ips.json")
-const chatroom = require("./chatroom.js")
+const chatroom = require("./chatroom.js").chatroom
 
 app.use(cookieParser())
 
@@ -94,9 +94,9 @@ io.on('connection', (socket) => {
         loginsys.signup(socket, msg, con, tokens)
     })
     socket.on('loadnav', (msg) => {
-        getnav.getNav(socket, msg, con)
+        getNav(socket, msg, con)
     })
     socket.on('chatroom', (msg)=> {
-        chatroom.chatroom(io, msg, tokens, con);
+        chatroom(io, msg, tokens, con);
     })
 })
