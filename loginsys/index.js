@@ -61,7 +61,7 @@ function login(socket, msg, con, tokens) {
 }
 
 function signup(socket, msg, con) {
-    //store local vals
+    //store some vals
     let name = msg.name;
     let username = msg.username;
     let password = msg.password;
@@ -91,38 +91,42 @@ function signup(socket, msg, con) {
                     initials += name.split(" ")[i][0].toUpperCase()
                 }
 
-                //reads mask
-                Jimp.read(__dirname + "/mask.png").then((mask) =>{
+                (async () => {
+                    //wait for assets to load
+                    var mask = await Jimp.read(__dirname + "/mask.png")
+                    var font = await Jimp.loadFont(Jimp.FONT_SANS_128_WHITE);
+
+                    //make new image
                     new Jimp(256, 256, 'white', (err, image) => {
                         if (err) throw err;
-                    
-                        //loads font
-                        Jimp.loadFont(Jimp.FONT_SANS_128_WHITE).then((font) =>{
-                            //scans picture
-                            for (let x = 0; x < image.bitmap.width; x++) {
-                                for (let y = 0; y < image.bitmap.height; y++) {
-                                    //if y is below the sinewave then draw the foregrond color
-                                    if (y <= (Math.sin(x/20)*20) + image.bitmap.height/2) {
-                                        image.setPixelColor(Jimp.cssColorToHex(foregroundColor), x, y)
-                                    } else {
-                                        image.setPixelColor(Jimp.cssColorToHex(backgroundColor), x, y)
-                                    }
+
+                        //draw sine wave
+                        for (let x = 0; x < image.bitmap.width; x++) {
+                            for (let y = 0; y < image.bitmap.height; y++) {
+                                //if y is below the sinewave then draw the foregrond color
+                                if (y <= (Math.sin(x/20)*20) + image.bitmap.height/2) {
+                                    image.setPixelColor(Jimp.cssColorToHex(foregroundColor), x, y)
+                                } else {
+                                    image.setPixelColor(Jimp.cssColorToHex(backgroundColor), x, y)
                                 }
                             }
-                        
-                            //puts the initials on the image
-                            image.print(font, 0, 0, { text: initials, alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER, alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE }, image.bitmap.width, image.bitmap.height)
-                        
-                            //circle it then base64 then send it to the browser
-                            image.mask(mask, 0, 0).getBase64(Jimp.AUTO, (err, res) => {
-                                con.query("INSERT INTO login (id, name, username, hash, base64icon) VALUES (null, '" + name + "', '" + username + "', '" + hash + "', '" + res + "')", function (err, result) {
-                                    if (err) throw err;
-                                    socket.emit('signup', {"success": true})
-                                });
-                            }) 
+                        }
+
+                        //puts the initials on the image
+                        image.print(font, 0, 0, { text: initials, alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER, alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE }, image.bitmap.width, image.bitmap.height)
+
+                        //mask it then base64 encode it then send it to the browser
+                        image.mask(mask, 0, 0).getBase64(Jimp.AUTO, (err, res) => {
+                            if (err) throw err;
+
+                            con.query("INSERT INTO login (id, name, username, hash, base64icon) VALUES (null, '" + name + "', '" + username + "', '" + hash + "', '" + res + "')", function (err, result) {
+                                if (err) throw err;
+                                socket.emit('signup', {"success": true})
+                                console.log(chalk.green(`User ${username} just signed up!`))
+                            });
                         })
                     })
-                })
+                })();
             } else {
                 socket.emit('signup', {"success": false, "errmsg": "Account already exist"})
             }

@@ -8,12 +8,16 @@ const cookieParser = require('cookie-parser')
 //mysql
 const mysql = require('mysql')
 
+//chalk
+const chalk = require("chalk")
+
 //me files
 const loginsys = require("./loginsys")
 const getNav = require("./getnav.js").getNav
 const ips = require("./ips.json")
 const chatroom = require("./chatroom.js").chatroom
 
+//add cookie parser
 app.use(cookieParser())
 
 var tokens = []
@@ -26,10 +30,12 @@ var sql = {
     database: "website"
 };
 var con = mysql.createConnection(sql)
-console.log("connected to db")
+
+console.log(chalk.green("Connected to db"))
+
 con.on('error', (err) => {
     if(err.code === 'PROTOCOL_CONNECTION_LOST') {
-        setTimeout(() => { console.log("Reconnecting to DB server"); con = mysql.createConnection(sql); }, 2000)
+        setTimeout(() => { console.log(chalk.yellow("Reconnecting to DB server")); con = mysql.createConnection(sql); }, 2000)
     } else {
         throw err;
     }
