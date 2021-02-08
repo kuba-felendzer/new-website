@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="../../scripts/chatroom.js"></script>
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; box-sizing: 
+            border-box; 
+        }
+        body { 
+            font: 13px Helvetica, Arial; 
+        }
+        form { 
+            /*background: #000; */
+            padding: 3px; 
+            position: fixed; 
+            bottom: 0; 
+            width: 100%;
+        }
+        form input { 
+            border: 0; 
+            padding: 10px; 
+            width: 50%;
+            margin-right: 0.5%;
+            border-radius: 15px;
+            color: white;
+            background-color: #5e5e5e;
+        }
+        form button { 
+            width: 9%; 
+            background: #5e5e5e; 
+            border: none; 
+            padding: 10px;
+            border-radius: 15px;
+            color: white;
+        }
+        #messages { 
+            list-style-type: none; 
+            margin-bottom: 4.5%; 
+            padding: 10px; 
+        }
+        #messages li {
+            padding: 5px;
+            word-wrap: break-word;
+        }
+        #messages img {
+            vertical-align: middle;
+        }
+        #messages li:nth-child(odd) { 
+            background: #eee; 
+        }
+        .selectioncheck {
+            margin: 0;
+            padding: 0;
+            width: 2%;
+            vertical-align: middle;
+        }
+    </style>
+  </head>
+  <body>
+    <ul id="messages"></ul>
+    <audio id="myAudio">
+        <source src="../ding.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+      </audio>
+    <form action="">
+        <input id="m" autocomplete="off" placeholder="Type here...">
+        <button>Send</button>
+        <p style="display: inline;">Play ding:</p><input type="checkbox" title="Play ding on new message" id="playding" class="selectioncheck" onclick="updateSettings()">
+        <p style="display: inline;">Show icon:</p><input type="checkbox" title="Display user icons" id="displayico" class="selectioncheck" onclick="updateSettings()" checked>
+        <p style="display: inline;">Show username:</p><input type="checkbox" title="Display username" id="displayuser" class="selectioncheck" onclick="updateSettings()" checked>
+    </form>
+  </body>
+</html>

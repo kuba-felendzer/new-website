@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="css/indexstyle.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <title>Login</title>
+        <script>
+            $(function () {
+                var socket = io();
+
+                $('form').submit(function(e) {
+                    if ($("#password").val() === $("#password1").val()) {
+                        socket.emit('signup', {"name": $("#name").val(), "username": $("#username").val(), "password": $("#password").val()}); //emit the value   
+                    } else {
+                        console.log("passwords dont patch")
+                        console.log($("#password").val());
+                        console.log($("#password1").val())
+                    }
+                    return false; //idfk
+                });
+                socket.on("signup", (msg) => {
+                    console.log(msg)
+                    if (msg.success == true) {
+                        window.location.replace("index.html");
+                    } else {
+                        $("#errmsg").text(msg.errmsg)
+                    }
+                })
+            });
+        </script>
+    </head>
+    <body>
+        <div id="container" class="center">
+            <h2>Signup</h2>
+            <div id="form">
+                <form action="">
+                    <input id="name" placeholder="Full name" autocomplete="off" type="text">
+                    <br>
+                    <input id="username" placeholder="Username" autocomplete="off" type="text">
+                    <br>
+                    <input id="password" placeholder="Password" autocomplete="off" type="password">
+                    <br>
+                    <input id="password1" placeholder="Retype password" autocomplete="off" type="password">
+                    <br>
+                    <button>Signup</button>
+                    <br>
+                    <p id="errmsg"></p>
+                </form>
+            </div>
+            <a href="index.html">Login</a>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="css/indexstyle.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <title>Login</title>
+        <script>
+            $(function () {
+                var socket = io();
+
+                $('form').submit(function(e) {
+                    socket.emit('login', {"username": $("#username").val(), "password": $("#password").val()});
+                    return false; //idfk
+                });
+                socket.on("login", (msg) => {
+                    console.log(msg)
+                    if (msg.success == true) {
+                        //$("#img").attr("src", msg.img)
+                        document.cookie = "token=" + msg.token;
+                        window.location.replace("webpages/web.html");
+                    } else {
+                        $("#errmsg").text(msg.errmsg)
+                    }
+                })
+            });
+        </script>
+    </head>
+    <body>
+        <div id="container" class="center">
+            <h2>Login</h2>
+            <div id="form">
+                <form action="">
+                    <input id="username" placeholder="Username" autocomplete="off" type="text">
+                    <br>
+                    <input id="password" placeholder="Password" autocomplete="off" type="password">
+                    <br>
+                    <button>Login</button>
+                    <br>
+                    <p id="errmsg"></p>
+                </form>
+            </div>
+            <img src="" id="img">
+            <a href="signup.html">Signup</a>
+        </div>
+    </body>
+</html>

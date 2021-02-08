@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Chatroom</title>
+        <link rel="stylesheet" href="../../css/mainstyle.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="../../scripts/loadnav.js"></script>
+        <!-- Compiled and minified CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+        <!-- Compiled and minified JavaScript -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div id="container" class="center">
+            <h3>Chatroom</h3>
+            <hr>
+            <div id="nav">
+                <h5 style="padding-left: 10px;">Nav</h5>
+                <ul id="links"></ul>
+            </div>
+            <div id="main" style="width: 90%; height: 100%;">
+                <iframe src="chatroomiframe.html" style="width: 100%;" height="500" frameBorder="0" id="chatroomiframe"></iframe>
+                <button onclick="window.location.replace('chatroomiframe.html')" class="btn wave-effect">Fullscreen</button>
+            </div>
+        </div>
+    </body>
+</html>
