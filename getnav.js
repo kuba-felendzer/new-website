@@ -1,6 +1,4 @@
-exports.getNav = getNav;
-
-function getNav(socket, msg, con) {
+module.exports = function (socket, msg, con) {
     //sends nav
     if (msg.loadnav == true) {
         con.query("SELECT * FROM `pages`", function (err, result) {

@@ -1,7 +1,6 @@
-var verify = require("./loginsys").verify;
-exports.chatroom = chatroom;
+const {verify, getUserInfo} = require("./loginsys");
 
-function chatroom(io, msg, tokens, con) {
+module.exports = function (io, msg, tokens, con) {
     let token = msg.token;
     let type = msg.type;
 
@@ -29,13 +28,3 @@ function chatroom(io, msg, tokens, con) {
     }
 }
 
-//loads usern info
-function getUserInfo(token, tokens) {
-    var data = []
-    tokens.forEach(element => {
-        if (element[1] == token) {
-            data = element;
-        }
-    });
-    return data;
-}

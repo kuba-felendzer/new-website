@@ -13,9 +13,9 @@ const chalk = require("chalk")
 
 //me files
 const loginsys = require("./loginsys")
-const getNav = require("./getnav.js").getNav
+const getNav = require("./getnav.js")
 const ips = require("./ips.json")
-const chatroom = require("./chatroom.js").chatroom
+const chatroom = require("./chatroom.js")
 
 //add cookie parser
 app.use(cookieParser())

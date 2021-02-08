@@ -5,6 +5,7 @@ var chalk = require('chalk')
 exports.login = login;
 exports.signup = signup;
 exports.verify = verify;
+exports.getUserInfo = getUserInfo;
 
 var regex = /'|"|`|\\|\//g;
 
@@ -152,4 +153,15 @@ function verify(tokens, token) {
         });
     }
     return found;
+}
+
+//loads usern info
+function getUserInfo(token, tokens) {
+    var data = []
+    tokens.forEach(element => {
+        if (element[1] == token) {
+            data = element;
+        }
+    });
+    return data;
 }
