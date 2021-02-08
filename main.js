@@ -12,6 +12,7 @@ const mysql = require('mysql')
 const loginsys = require("./loginsys")
 const getnav = require("./getnav.js")
 const ips = require("./ips.json")
+const chatroom = require("./chatroom.js")
 
 app.use(cookieParser())
 
@@ -96,6 +97,6 @@ io.on('connection', (socket) => {
         getnav.getNav(socket, msg, con)
     })
     socket.on('chatroom', (msg)=> {
-        loginsys.chatroom(io, msg, tokens, con);
+        chatroom.chatroom(io, msg, tokens, con);
     })
 })
