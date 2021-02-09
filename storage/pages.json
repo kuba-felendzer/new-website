@@ -18,6 +18,6 @@
     {
         "pagename": "Test",
         "pagepath": "test.html",
-        "reqLogged": false
+        "reqLogged": true
     }
 ]
