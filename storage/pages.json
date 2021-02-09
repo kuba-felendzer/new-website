@@ -10,5 +10,9 @@
     [
         "Chatroom",
         "chatroom/chatroom.html"
+    ],
+    [
+        "Test",
+        "test.html"
     ]
 ]
