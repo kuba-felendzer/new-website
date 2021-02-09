@@ -14,6 +14,7 @@ module.exports = function (io, msg, tokens, con) {
                     //gets user info
                     let data = getUserInfo(token, tokens)
 
+                    //broadcast the message to everyone
                     io.emit("chatroom", {"type": "newmsg", "sendername": data.rname, "senderusername": data.uname, "text": text, "sendericon": data.icon})
                 }
                 break;

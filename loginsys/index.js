@@ -11,20 +11,26 @@ exports.login = function login(socket, msg, con, tokens) {
     let username = msg.username;
     let password = msg.password;
     console.log(chalk.gray(`User ${username} is trying to Authenticate`))
+
+    //check if passes blank check and regex test
     if (username != "" && password != "" && regex.test(username) != true && regex.test(password) != true) {
+
+        //check if username exists
         con.query("select * from `login` where username='" + username + "'", (err, res) =>{
             if (err) throw err;
+
             //check if the username exist
             if (res.length > 0) {
-                //verify the password
+                //verify the password hash
                 if (passwordHash.verify(password, res[0].hash)) {
 
-                    //check if already logged in if not generate token
+                    //make list of authed usernames
                     let authedunames = []
                     tokens.forEach(element => {
                         authedunames.push(element.uname)
                     });
 
+                    //check if already logged in if not generate token
                     if (authedunames.includes(username) != true) {
                         //generates token 
                         let token = require("crypto").randomBytes(10).toString('hex');
@@ -32,9 +38,12 @@ exports.login = function login(socket, msg, con, tokens) {
                         //add to authenticated users pool
                         tokens.push({"uname": username, "rname": res[0].name, "token": token, "icon": res[0].base64icon})
 
+                        //emit the value
                         socket.emit('login', { "success": true, "token": token})
                         console.log(chalk.green(`User ${username} has sussecfully authenticated!`))
+
                     } else {
+                        //retrives tokens from pool because user has already existing token
                         tokens.forEach(element => {
                             if (element.uname == username) {
                                 socket.emit('login', { "success": true, "token": element.token })
@@ -44,15 +53,18 @@ exports.login = function login(socket, msg, con, tokens) {
                     }
                 
                 } else {
+                    //errmsg
                     console.log(chalk.red(`User ${username} failed to Authenticate`))
                     socket.emit('login', {"success": false, "errmsg": "Wrong username or password"})
                 }
             } else {
+                //errmsg
                 console.log(chalk.red(`User ${username} failed to Authenticate`))
                 socket.emit('login', {"success": false, "errmsg": "Wrong username or password"})
             }
         })
     } else {
+        //errmsg
         console.log(chalk.red(`User ${username} failed to Authenticate`))
         socket.emit('login', {"success": false, "errmsg": "No special chars"})
     }
@@ -72,7 +84,7 @@ exports.signup = function signup(socket, msg, con) {
         con.query("SELECT * FROM `login` WHERE name='" + name + "' AND username='" + username + "'", (err, res) => {
             if (err) throw err;
 
-            //if not do code
+            //make sure there are no accounts
             if (res.length == 0) {
 
                 //colors array
@@ -119,6 +131,8 @@ exports.signup = function signup(socket, msg, con) {
 
                             con.query("INSERT INTO login (id, name, username, hash, base64icon) VALUES (null, '" + name + "', '" + username + "', '" + hash + "', '" + res + "')", function (err, result) {
                                 if (err) throw err;
+
+                                //send signup success
                                 socket.emit('signup', {"success": true})
                                 console.log(chalk.green(`User ${username} just signed up!`))
                             });
@@ -126,10 +140,12 @@ exports.signup = function signup(socket, msg, con) {
                     })
                 })();
             } else {
+                console.log(chalk.red(`Username ${username} failed to Signup: Account already exist`))
                 socket.emit('signup', {"success": false, "errmsg": "Account already exist"})
             }
         })
     } else {
+        console.log(chalk.red(`Username ${username} failed to Signup: Used special chars`))
         socket.emit("signup", {"success": false, "errmsg": "No blank boxes or special chars"})
     }
 }

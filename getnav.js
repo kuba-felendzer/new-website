@@ -1,7 +1,7 @@
 const fs = require("fs")
 
 module.exports = function (socket, msg) {
-    //sends nav
+    //sends nav data
     if (msg.loadnav == true) {
         //adapt, improvise, overcome
         var pages = JSON.parse(fs.readFileSync("storage/pages.json"))

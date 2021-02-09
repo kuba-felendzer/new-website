@@ -51,11 +51,7 @@ app.get("*", (req, res)=> {
     let reqip = (req.headers['x-forwarded-for'] || req.connection.remoteAddress).replace("::ffff:", "")
 
     function ifauth(redir) {
-        if (loginsys.verify(tokens, req.cookies.token)) {
-            res.sendFile(__dirname + redir)
-        } else {
-            res.sendFile(__dirname + "/html/webpages/notok.html")
-        }
+        
     }
 
     if (!ips.includes(reqip)) {
@@ -63,7 +59,10 @@ app.get("*", (req, res)=> {
 
         //if the page file name ends in .html
         if (etc.getFileNameFromPath(req._parsedUrl.pathname).endsWith(".html")) {
+            //found flag
             var found = false;
+
+            //look thru the pages
             pages.forEach(element => {
                 
                 //find the page in the json file
@@ -72,10 +71,16 @@ app.get("*", (req, res)=> {
                     if (element.reqLogged == true) {
 
                         //send to page if authed
-                        ifauth("/html" + req._parsedUrl.pathname);
+                        if (loginsys.verify(tokens, req.cookies.token)) {
+                            res.sendFile(__dirname + "/html" + req._parsedUrl.pathname)
+                        } else {
+                            res.sendFile(__dirname + "/html/webpages/notok.html")
+                        }
+
+                        //marked found
                         found = true
                     } else {
-                        //if page does not require being authenticated to load it
+                        //if page does not require being authenticated, load it
                         res.sendFile(__dirname + "/html" + req._parsedUrl.pathname);
                         found = true
                     }
