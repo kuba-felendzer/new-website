@@ -2,14 +2,12 @@ var passwordHash = require('password-hash');
 var Jimp = require('jimp');
 var chalk = require('chalk')
 
-exports.login = login;
-exports.signup = signup;
 exports.verify = verify;
 exports.getUserInfo = getUserInfo;
 
 var regex = /'|"|`|\\|\//g;
 
-function login(socket, msg, con, tokens) {
+exports.login = function login(socket, msg, con, tokens) {
     let username = msg.username;
     let password = msg.password;
     console.log(chalk.gray(`User ${username} is trying to Authenticate`))
@@ -22,28 +20,27 @@ function login(socket, msg, con, tokens) {
                 if (passwordHash.verify(password, res[0].hash)) {
 
                     //check if already logged in if not generate token
-                    let authedhashes = []
+                    let authedunames = []
                     tokens.forEach(element => {
-                        authedhashes.push(element[0])
+                        authedunames.push(element.uname)
                     });
 
-                    if (authedhashes.includes(res[0].hash) != true) {
+                    if (authedunames.includes(username) != true) {
                         //generates token 
                         let token = require("crypto").randomBytes(10).toString('hex');
 
                         //add to authenticated users pool
-                        tokens.push([res[0].hash, token, username, res[0].name])
+                        tokens.push({"uname": username, "rname": res[0].name, "token": token, "icon": res[0].base64icon})
 
                         socket.emit('login', { "success": true, "token": token})
                         console.log(chalk.green(`User ${username} has sussecfully authenticated!`))
                     } else {
-                        let token = "";
                         tokens.forEach(element => {
-                            if (element[0] == res[0].hash) {
-                                token = element[1]
+                            if (element.uname == username) {
+                                socket.emit('login', { "success": true, "token": element.token })
                             }
                         });
-                        socket.emit('login', { "success": true, "token": token })
+                        
                     }
                 
                 } else {
@@ -61,7 +58,7 @@ function login(socket, msg, con, tokens) {
     }
 }
 
-function signup(socket, msg, con) {
+exports.signup = function signup(socket, msg, con) {
     //store some vals
     let name = msg.name;
     let username = msg.username;
@@ -147,7 +144,7 @@ function verify(tokens, token) {
     let found = false;
     if (typeof token != 'undefined') {
         tokens.forEach(element => {
-            if (element[1] == token) {
+            if (element.token == token) {
                 found = true;
             }
         });
@@ -159,7 +156,7 @@ function verify(tokens, token) {
 function getUserInfo(token, tokens) {
     var data = []
     tokens.forEach(element => {
-        if (element[1] == token) {
+        if (element.token == token) {
             data = element;
         }
     });

@@ -1,6 +1,6 @@
 const fs = require("fs")
 
-module.exports = function (socket, msg, con) {
+module.exports = function (socket, msg) {
     //sends nav
     if (msg.loadnav == true) {
         //adapt, improvise, overcome

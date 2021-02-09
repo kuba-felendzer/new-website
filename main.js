@@ -100,7 +100,7 @@ io.on('connection', (socket) => {
     })
 
     socket.on('loadnav', (msg) => {
-        getNav(socket, msg, con)
+        getNav(socket, msg)
     })
 
     socket.on('chatroom', (msg)=> {
