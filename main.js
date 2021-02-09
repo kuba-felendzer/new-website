@@ -5,9 +5,6 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 const cookieParser = require('cookie-parser')
 
-//mysql
-const mysql = require('mysql')
-
 //chalk
 const chalk = require("chalk")
 
@@ -24,26 +21,7 @@ const etc = require("./etc.js")
 //add cookie parser
 app.use(cookieParser())
 
-var tokens = []
-
-//sql auth info
-var sql = {
-    host: "localhost",
-    user: "root",
-    password: "8212",
-    database: "website"
-};
-var con = mysql.createConnection(sql)
-
-console.log(chalk.green("Connected to db"))
-
-con.on('error', (err) => {
-    if(err.code === 'PROTOCOL_CONNECTION_LOST') {
-        setTimeout(() => { console.log(chalk.yellow("Reconnecting to DB server")); con = mysql.createConnection(sql); }, 2000)
-    } else {
-        throw err;
-    }
-})
+var userpool = []
 
 //router
 app.get("*", (req, res)=> {
@@ -71,7 +49,7 @@ app.get("*", (req, res)=> {
                     if (element.reqLogged == true) {
 
                         //send to page if authed
-                        if (loginsys.verify(tokens, req.cookies.token)) {
+                        if (loginsys.verify(userpool, req.cookies.token)) {
                             res.sendFile(__dirname + "/html" + req._parsedUrl.pathname)
                         } else {
                             res.sendFile(__dirname + "/html/webpages/notok.html")
@@ -115,11 +93,11 @@ http.listen(80, () => {
 //socket.io shit
 io.on('connection', (socket) => {
     socket.on('login', (msg) => {
-        loginsys.login(socket, msg, con, tokens)
+        loginsys.login(socket, msg, userpool)
     })
 
     socket.on('signup', (msg) => {
-        loginsys.signup(socket, msg, con, tokens)
+        loginsys.signup(socket, msg)
     })
 
     socket.on('loadnav', (msg) => {
@@ -127,6 +105,6 @@ io.on('connection', (socket) => {
     })
 
     socket.on('chatroom', (msg)=> {
-        chatroom(io, msg, tokens, con);
+        chatroom(io, msg, userpool);
     })
 })
