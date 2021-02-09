@@ -85,23 +85,24 @@ app.get("*", (req, res)=> {
 
 //starts server
 http.listen(80, () => {
-    console.log('listening on *:80');
+    console.log(chalk.yellow('listening on *:80'));
 });
 
 
 //socket.io shit
 io.on('connection', (socket) => {
     socket.on('login', (msg) => {
-        //login(socket, msg)
         loginsys.login(socket, msg, con, tokens)
     })
+
     socket.on('signup', (msg) => {
-        //signup(socket, msg)
         loginsys.signup(socket, msg, con, tokens)
     })
+
     socket.on('loadnav', (msg) => {
         getNav(socket, msg, con)
     })
+    
     socket.on('chatroom', (msg)=> {
         chatroom(io, msg, tokens, con);
     })
