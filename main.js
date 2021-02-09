@@ -102,7 +102,7 @@ io.on('connection', (socket) => {
     socket.on('loadnav', (msg) => {
         getNav(socket, msg, con)
     })
-    
+
     socket.on('chatroom', (msg)=> {
         chatroom(io, msg, tokens, con);
     })
