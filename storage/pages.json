@@ -1,19 +1,23 @@
 [
     {
         "pagename": "Home",
-        "pagepath": "web.html"
+        "pagepath": "web.html",
+        "reqLogged": false
 
     },
     {
         "pagename": "About",
-        "pagepath": "about.html"
+        "pagepath": "about.html",
+        "reqLogged": false
     },
     {
         "pagename": "Chatroom",
-        "pagepath": "chatroom/chatroom.html"
+        "pagepath": "chatroom/chatroom.html",
+        "reqLogged": true
     },
     {
         "pagename": "Test",
-        "pagepath": "test.html"
+        "pagepath": "test.html",
+        "reqLogged": false
     }
 ]

@@ -11,11 +11,15 @@ const mysql = require('mysql')
 //chalk
 const chalk = require("chalk")
 
+//fs
+const fs = require("fs")
+
 //me files
 const loginsys = require("./loginsys")
 const getNav = require("./getnav.js")
 const ips = require("./ips.json")
-const chatroom = require("./chatroom.js")
+const chatroom = require("./chatroom.js");
+const etc = require("./etc.js")
 
 //add cookie parser
 app.use(cookieParser())
@@ -55,28 +59,40 @@ app.get("*", (req, res)=> {
     }
 
     if (!ips.includes(reqip)) {
-        switch (req._parsedUrl.pathname) {
-            case "/api":
-                console.log("api call");
-                res.send("API")
-                break;
-            case "/webpages/chatroom/chatroom.html":
+        var pages = JSON.parse(fs.readFileSync("storage/pages.json", 'utf-8'))
 
-                //if authed go to this page
-                ifauth("/html/webpages/chatroom/chatroom.html");
-                break;
-            case "/webpages/chatroom/chatroomiframe.html":
+        //if the page file name ends in .html
+        if (etc.getFileNameFromPath(req._parsedUrl.pathname).endsWith(".html")) {
+            var found = false;
+            pages.forEach(element => {
                 
-                //if authed go to this page
-                ifauth("/html/webpages/chatroom/chatroomiframe.html")
-                break;
-            default:
-                if (req._parsedUrl.pathname.includes(".")) {
-                    res.sendFile(__dirname + "/html" + req._parsedUrl.pathname);
-                } else {
-                    res.sendFile(__dirname + "/html" + req._parsedUrl.pathname + "/index.html")
+                //find the page in the json file
+                if (etc.getFileNameFromPath(element.pagepath) == etc.getFileNameFromPath(req._parsedUrl.pathname)) {
+
+                    if (element.reqLogged == true) {
+
+                        //send to page if authed
+                        ifauth("/html" + req._parsedUrl.pathname);
+                        found = true
+                    } else {
+                        //if page does not require being authenticated to load it
+                        res.sendFile(__dirname + "/html" + req._parsedUrl.pathname);
+                        found = true
+                    }
                 }
+            });
+            
+            //if file is not specified in pages folder its prob the index page
+            if (!found) {
+                res.sendFile(__dirname + "/html" + req._parsedUrl.pathname);
             }
+        } else {
+            if (req._parsedUrl.pathname.includes(".")) {
+                res.sendFile(__dirname + "/html" + req._parsedUrl.pathname);
+            } else {
+                res.sendFile(__dirname + "/html" + req._parsedUrl.pathname + "/index.html")
+            }
+        }
     } else {
         console.log(ip + " Tried to access webpage " + req._parsedUrl.pathname)
         res.send("FUCK OFF BITCH")
