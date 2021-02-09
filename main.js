@@ -92,6 +92,7 @@ app.get("*", (req, res)=> {
                 res.sendFile(__dirname + "/html" + req._parsedUrl.pathname);
             }
         } else {
+            //locate the file
             if (req._parsedUrl.pathname.includes(".")) {
                 res.sendFile(__dirname + "/html" + req._parsedUrl.pathname);
             } else {
@@ -99,6 +100,7 @@ app.get("*", (req, res)=> {
             }
         }
     } else {
+        //ip ban system
         console.log(ip + " Tried to access webpage " + req._parsedUrl.pathname)
         res.send("FUCK OFF BITCH")
     }
