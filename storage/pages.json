@@ -1,18 +1,19 @@
 [
-    [
-        "Home",
-        "web.html"
-    ], 
-    [
-        "About",
-        "about.html"
-    ],
-    [
-        "Chatroom",
-        "chatroom/chatroom.html"
-    ],
-    [
-        "Test",
-        "test.html"
-    ]
+    {
+        "pagename": "Home",
+        "pagepath": "web.html"
+
+    },
+    {
+        "pagename": "About",
+        "pagepath": "about.html"
+    },
+    {
+        "pagename": "Chatroom",
+        "pagepath": "chatroom/chatroom.html"
+    },
+    {
+        "pagename": "Test",
+        "pagepath": "test.html"
+    }
 ]
