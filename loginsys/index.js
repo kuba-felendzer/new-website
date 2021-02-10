@@ -118,7 +118,7 @@ exports.signup = function signup(socket, msg) {
                     image.mask(mask, 0, 0).getBase64(Jimp.AUTO, (err, res) => {
                         if (err) throw err;
                     
-                        var tempUser = {
+                        let tempUser = {
                             [username]: {
                                 "hash": hash,
                                 "rname": name,
@@ -126,7 +126,7 @@ exports.signup = function signup(socket, msg) {
                             }
                         }
 
-                        Object.assign(userdata, tempUser)
+                        userdata = Object.assign(userdata, tempUser)
                         
                         socket.emit('signup', {"success": true})
                         fs.writeFileSync("storage/usrdata.json", JSON.stringify(userdata, null, 2))

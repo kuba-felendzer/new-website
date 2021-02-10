@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Home</title>
+        <link rel="stylesheet" href="../css/mainstyle.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="../scripts/loadnav.js"></script>
+        <!-- Compiled and minified CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+        <!-- Compiled and minified JavaScript -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+        <style>
+            #people {
+                background-color: white;
+                width: 100%;
+            }
+        </style>
+        <script>
+            $(function () {
+                var socket = io();
+
+                socket.on("friends", (msg) => {
+                    let keys = Object.keys(msg)
+
+                    keys.forEach(element => {
+                        $("#people").append(`<tr><td><img src='${msg[element].icon}' width='32'></td> <td><h4 style="display: inline;">${msg[element].rname} (${element})</h4></td><td><a class="waves-effect waves-light btn" style="margin-left: 30px;">Add friend</a></td></tr>`)
+                    });
+                })
+
+                socket.emit("friends", {"action": "getallusers"})
+            })
+        </script>
+    </head>
+    <body>
+        <div id="container" class="center">
+            <h3>Friends</h3>
+            <hr>
+            <div id="nav">
+                <h5 style="padding-left: 10px;">Nav</h5>
+                <ul id="links"></ul>
+            </div>
+            <div id="main">
+                <table id="people">
+                    
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

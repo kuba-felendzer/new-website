@@ -1,14 +1,11 @@
-
-
 function getAllUsers() {
     var users = require("./storage/usrdata.json");
 
     var keys = Object.keys(users)
-
     var userdata = {}
 
     keys.forEach(element => {
-        var tempuser = {
+        let tempuser = {
             [element]: {
                 "rname": users[element].rname,
                 "friends": users[element].friends,
@@ -18,7 +15,6 @@ function getAllUsers() {
 
         userdata = Object.assign(tempuser, userdata);
     })
-    console.log(userdata)
     return userdata;
 }
 
