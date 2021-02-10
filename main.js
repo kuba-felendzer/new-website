@@ -1,6 +1,6 @@
 //http server
-const express = require('express');
-const app = express();
+const express = require('express')
+const app = express()
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 const cookieParser = require('cookie-parser')
@@ -15,8 +15,9 @@ const fs = require("fs")
 const loginsys = require("./loginsys")
 const getNav = require("./getnav.js")
 const ips = require("./ips.json")
-const chatroom = require("./chatroom.js");
+const chatroom = require("./chatroom.js")
 const etc = require("./etc.js")
+const friends = require("./friends.js")
 
 //add cookie parser
 app.use(cookieParser())
@@ -27,10 +28,6 @@ var userpool = []
 app.get("*", (req, res)=> {
     //req ip
     let reqip = (req.headers['x-forwarded-for'] || req.connection.remoteAddress).replace("::ffff:", "")
-
-    function ifauth(redir) {
-        
-    }
 
     if (!ips.includes(reqip)) {
         var pages = JSON.parse(fs.readFileSync("storage/pages.json", 'utf-8'))
@@ -106,5 +103,9 @@ io.on('connection', (socket) => {
 
     socket.on('chatroom', (msg)=> {
         chatroom(io, msg, userpool);
+    })
+
+    socket.on('friends', (msg) => {
+        friends(socket, msg)
     })
 })
